@@ -23,7 +23,7 @@ app.use('/api/videos', videoRoutes);
 app.use('/api/progress', progressRoutes);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date() });
 });
 
@@ -34,4 +34,3 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
-

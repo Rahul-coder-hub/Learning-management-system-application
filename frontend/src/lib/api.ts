@@ -2,7 +2,6 @@ const API_URL = typeof window !== 'undefined' && window.location.hostname === 'l
     ? 'http://localhost:5000/api'
     : '/api';
 
-
 export const apiCall = async (endpoint: string, options: any = {}) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
 
@@ -18,10 +17,10 @@ export const apiCall = async (endpoint: string, options: any = {}) => {
     });
 
     if (response.status === 401 && endpoint !== '/auth/login') {
-        // Handle token expiration - simplified for now
-        // In a real app, you'd use the refresh token here
         localStorage.removeItem('accessToken');
-        window.location.href = '/login';
+        if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+        }
     }
 
     return response;
