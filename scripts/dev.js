@@ -1,33 +1,48 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
+const children = [];
+
 function runCommand(command, args, name, colorCode) {
-    const process = spawn(command, args, {
+    const proc = spawn(command, args, {
         shell: true,
         stdio: 'pipe',
         cwd: path.resolve(__dirname, '..')
     });
 
+    children.push(proc);
+
     const prefix = `\x1b[${colorCode}m[${name}]\x1b[0m`;
 
-    process.stdout.on('data', (data) => {
+    proc.stdout.on('data', (data) => {
         data.toString().split('\n').filter(line => line.trim()).forEach(line => {
             console.log(`${prefix} ${line}`);
         });
     });
 
-    process.stderr.on('data', (data) => {
+    proc.stderr.on('data', (data) => {
         data.toString().split('\n').filter(line => line.trim()).forEach(line => {
             console.error(`${prefix} \x1b[31m${line}\x1b[0m`);
         });
     });
 
-    process.on('close', (code) => {
+    proc.on('close', (code) => {
         console.log(`${prefix} process exited with code ${code}`);
     });
 
-    return process;
+    return proc;
 }
+
+process.on('SIGINT', () => {
+    console.log('\nStopping LMS Application...');
+    children.forEach(child => child.kill());
+    process.exit();
+});
+
+process.on('SIGTERM', () => {
+    children.forEach(child => child.kill());
+    process.exit();
+});
 
 console.log('Starting LMS Application...');
 
