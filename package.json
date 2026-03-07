@@ -8,11 +8,13 @@
     "scripts": {
         "install:all": "npm install",
         "build": "npm run build --workspace=frontend",
-        "dev": "npx concurrently \"npm run start --workspace=backend\" \"npm run dev --workspace=frontend\"",
+        "dev": "node scripts/dev.js",
+        "start": "npm run dev",
         "start:backend": "npm run start --workspace=backend",
         "start:frontend": "npm run dev --workspace=frontend"
     },
     "devDependencies": {
-        "concurrently": "^8.2.2"
+        "concurrently": "^8.2.2",
+        "date-fns": "^2.30.0"
     }
 }
